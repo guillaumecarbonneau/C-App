@@ -1,0 +1,1226 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no" />
+<meta name="theme-color" content="#7c3aed" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Camille" />
+<link rel="manifest" href="./manifest.webmanifest" />
+<link rel="apple-touch-icon" href="./apple-touch-icon.png" />
+<link rel="icon" href="./icon-192.png" />
+<title>Camille — Lernhelfer</title>
+<style>
+:root {
+  --bg: #0b0b12;
+  --bg-soft: #151524;
+  --card: #1c1c2e;
+  --card-2: #232341;
+  --border: #2a2a44;
+  --text: #f3f3fa;
+  --muted: #9898b5;
+  --primary: #7c3aed;
+  --primary-2: #a855f7;
+  --accent: #ec4899;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --radius: 14px;
+  --shadow: 0 10px 30px rgba(0,0,0,.35);
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { margin:0; padding:0; background: var(--bg); color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+  font-size: 16px; min-height: 100svh; overflow-x: hidden; }
+body { background:
+  radial-gradient(1200px 600px at -10% -10%, rgba(124,58,237,.25), transparent 60%),
+  radial-gradient(900px 500px at 110% 10%, rgba(236,72,153,.22), transparent 60%),
+  var(--bg);
+}
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+input, textarea, select { font: inherit; color: inherit; }
+a { color: var(--primary-2); }
+
+.app {
+  max-width: 720px; margin: 0 auto; min-height: 100svh; position: relative;
+  padding-top: calc(var(--safe-top) + 6px);
+  padding-bottom: calc(var(--safe-bottom) + 80px);
+}
+
+.topbar {
+  display:flex; align-items:center; gap:10px; padding: 10px 14px;
+  position: sticky; top: var(--safe-top); z-index: 10;
+  background: linear-gradient(180deg, rgba(11,11,18,.95), rgba(11,11,18,.75) 70%, transparent);
+  backdrop-filter: blur(8px);
+}
+.topbar .title { font-weight:700; font-size:18px; letter-spacing:.2px; }
+.topbar .sub { color: var(--muted); font-size:12px; }
+.topbar .spacer { flex:1; }
+.iconbtn {
+  width: 38px; height: 38px; border-radius: 10px;
+  display:inline-flex; align-items:center; justify-content:center;
+  background: rgba(255,255,255,.06); border:1px solid var(--border);
+}
+.iconbtn:active { transform: scale(.96); }
+
+.card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 16px; margin: 12px 14px;
+  box-shadow: var(--shadow);
+}
+.card h3 { margin:0 0 8px; font-size: 16px; }
+.muted { color: var(--muted); font-size: 13px; }
+
+.row { display:flex; align-items:center; gap:10px; }
+.row + .row { margin-top: 10px; }
+
+.chip {
+  display:inline-flex; align-items:center; gap:6px;
+  padding: 4px 10px; border-radius: 999px; font-size: 12px;
+  background: rgba(124,58,237,.16); color: #dcd1ff; border:1px solid rgba(124,58,237,.35);
+}
+.chip.pink { background: rgba(236,72,153,.14); color: #ffd3e5; border-color: rgba(236,72,153,.35); }
+.chip.green { background: rgba(16,185,129,.14); color: #c6f5e2; border-color: rgba(16,185,129,.35); }
+.chip.warn { background: rgba(245,158,11,.14); color: #ffe3b4; border-color: rgba(245,158,11,.35); }
+
+.btn {
+  display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  padding: 14px 18px; border-radius: 12px; font-weight: 600; font-size: 16px;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: white; border: 0; width: 100%; text-align:center;
+  box-shadow: 0 8px 20px rgba(124,58,237,.35);
+}
+.btn:active { transform: scale(.98); }
+.btn.secondary {
+  background: var(--card-2); color: var(--text); border:1px solid var(--border); box-shadow:none;
+}
+.btn.ghost { background: transparent; border:1px solid var(--border); box-shadow:none; }
+.btn.success { background: linear-gradient(135deg, #10b981, #06b6d4); }
+.btn.danger { background: linear-gradient(135deg, #ef4444, #f97316); }
+.btn.small { padding: 9px 12px; font-size: 14px; border-radius: 10px; }
+.btn[disabled] { opacity:.5; pointer-events:none; }
+
+.input {
+  width: 100%; padding: 12px 14px; border-radius: 10px;
+  background: var(--card-2); border: 1px solid var(--border); color: var(--text);
+}
+textarea.input { min-height: 80px; resize: vertical; }
+label.label { display:block; color: var(--muted); font-size: 12px; margin-bottom: 4px; }
+
+.hero {
+  margin: 18px 14px 6px; padding: 22px; border-radius: 18px;
+  background: linear-gradient(135deg, rgba(124,58,237,.28), rgba(236,72,153,.22));
+  border: 1px solid var(--border); box-shadow: var(--shadow);
+}
+.hero h1 { margin:0 0 6px; font-size: 22px; }
+.hero p { margin: 0; color: #e7defc; font-size: 14px; }
+
+.tiles { display:grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 14px; margin-top: 10px;}
+.tile {
+  border-radius: 16px; padding: 18px; border:1px solid var(--border);
+  background: var(--card); min-height: 140px;
+  display:flex; flex-direction:column; justify-content:space-between; text-align:left;
+}
+.tile.parent { background: linear-gradient(160deg, #2a2146, #1a1430); }
+.tile.kid { background: linear-gradient(160deg, #2d1a3a, #431a3e); }
+.tile .emoji { font-size: 28px; }
+.tile h2 { margin: 0; font-size: 17px; }
+.tile .desc { color: var(--muted); font-size: 12.5px; margin-top: 4px; }
+
+.screen { display: none; animation: fade .2s ease both; }
+.screen.active { display: block; }
+@keyframes fade { from { opacity:0; transform: translateY(4px);} to { opacity:1; transform:none; } }
+
+.thumbs { display:grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
+.thumb {
+  position: relative; aspect-ratio: 1/1; border-radius: 10px; overflow: hidden;
+  background: #000; border:1px solid var(--border);
+}
+.thumb img { width:100%; height:100%; object-fit: cover; display:block; }
+.thumb .rm { position:absolute; top:4px; right:4px; width:24px; height:24px; border-radius: 50%;
+  background: rgba(0,0,0,.7); color:#fff; font-size:14px; display:flex; align-items:center; justify-content:center;}
+
+.flashdeck { perspective: 1000px; margin: 14px; }
+.flashcard {
+  position: relative; width: 100%; aspect-ratio: 3/2;
+  transform-style: preserve-3d; transition: transform .45s ease;
+  border-radius: 18px; box-shadow: var(--shadow);
+}
+.flashcard.flipped { transform: rotateY(180deg); }
+.face {
+  position: absolute; inset: 0; padding: 22px; border-radius: 18px;
+  display: flex; align-items:center; justify-content:center; text-align:center;
+  backface-visibility: hidden; -webkit-backface-visibility: hidden;
+  border: 1px solid var(--border); font-size: 20px; font-weight: 600; line-height: 1.35;
+}
+.face.front { background: linear-gradient(160deg, #2a2146, #1a1430); }
+.face.back { background: linear-gradient(160deg, #321a3d, #4a1e3a); transform: rotateY(180deg); font-weight: 500; font-size: 17px;}
+.deck-controls { display:flex; align-items:center; justify-content:space-between; padding: 4px 14px 0; gap:10px;}
+.deck-controls .progress { flex:1; text-align:center; color: var(--muted); font-size:13px; }
+
+.mcq-opt {
+  display:block; width:100%; text-align:left; padding: 14px 14px;
+  background: var(--card-2); border:1px solid var(--border); border-radius: 12px;
+  margin-bottom: 8px; font-size: 16px;
+}
+.mcq-opt.selected { border-color: var(--primary-2); background: rgba(168,85,247,.15); }
+.mcq-opt.correct { border-color: var(--success); background: rgba(16,185,129,.15); }
+.mcq-opt.wrong { border-color: var(--danger); background: rgba(239,68,68,.15); }
+
+.tabbar {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 20;
+  background: rgba(11,11,18,.92); backdrop-filter: blur(10px);
+  border-top: 1px solid var(--border);
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  padding-bottom: var(--safe-bottom);
+}
+.tabbar.hidden { display:none; }
+.tabbar button {
+  padding: 10px 2px; color: var(--muted); font-size: 11px; display:flex; flex-direction:column;
+  align-items:center; gap:4px;
+}
+.tabbar button.active { color: var(--text); }
+.tabbar .dot { width: 6px; height: 6px; border-radius:50%; background: var(--primary-2); opacity:0; }
+.tabbar button.active .dot { opacity: 1; }
+
+.modal-bg {
+  position: fixed; inset: 0; background: rgba(0,0,0,.6); z-index: 50;
+  display:none; align-items:flex-end; justify-content:center; padding: 10px;
+}
+.modal-bg.show { display:flex; }
+.modal {
+  width: 100%; max-width: 560px; background: var(--card); border:1px solid var(--border);
+  border-radius: 18px; padding: 16px; max-height: 88svh; overflow-y: auto;
+}
+.toast {
+  position: fixed; left: 50%; transform: translateX(-50%);
+  bottom: calc(var(--safe-bottom) + 90px); z-index: 100;
+  background: var(--card-2); color: var(--text);
+  border:1px solid var(--border); border-radius: 999px; padding: 10px 18px;
+  box-shadow: var(--shadow); display:none; font-size: 14px;
+}
+.toast.show { display:block; animation: fade .2s ease both; }
+
+.session-item {
+  display:flex; gap: 10px; align-items:center; padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+}
+.session-item:last-child { border-bottom: 0; }
+.session-item .s-title { font-weight: 600; font-size: 15px;}
+.session-item .s-meta { color: var(--muted); font-size: 12px; }
+
+.loading-overlay {
+  position: fixed; inset: 0; background: rgba(11,11,18,.85); backdrop-filter: blur(4px);
+  z-index: 40; display:none; flex-direction:column; align-items:center; justify-content:center; gap: 12px;
+  padding: 20px; text-align:center;
+}
+.loading-overlay.show { display: flex; }
+.spinner {
+  width: 44px; height: 44px; border-radius: 50%;
+  border: 3px solid rgba(255,255,255,.15); border-top-color: var(--primary-2);
+  animation: spin 1s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg);} }
+
+.reward-item { display:flex; align-items:center; gap:10px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+.reward-item:last-child { border:0; }
+.reward-item .r-name { flex:1; font-weight: 600; }
+.reward-item .r-cost { color: var(--warning); font-weight: 600; font-size: 14px; }
+
+.points-pill {
+  display:inline-flex; align-items:center; gap:6px;
+  padding: 6px 12px; border-radius: 999px; background: linear-gradient(135deg,#f59e0b,#ec4899);
+  color: white; font-weight: 700; font-size: 14px;
+}
+
+.kid-wrap .hero { background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);}
+.kid-wrap .hero h1 { font-size: 26px; }
+
+.grid { display: grid; gap: 10px; }
+.grid.cols-2 { grid-template-columns: 1fr 1fr; }
+.center { text-align: center; }
+.mt { margin-top: 10px; } .mt-2 { margin-top: 16px; }
+.pad { padding: 0 14px; }
+.sep { height: 1px; background: var(--border); margin: 10px 0; }
+details.accordion { background: var(--card-2); border:1px solid var(--border); border-radius: 10px; padding: 10px 12px; }
+details.accordion + details.accordion { margin-top: 8px;}
+details.accordion summary { cursor: pointer; font-weight: 600; }
+
+.list-pad { padding-left: 18px; margin: 4px 0; }
+.list-pad li { margin: 2px 0; }
+
+.hidden { display:none !important; }
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <div class="topbar">
+    <button class="iconbtn" id="backBtn" aria-label="Back" style="display:none">&larr;</button>
+    <div>
+      <div class="title" id="screenTitle">Camille</div>
+      <div class="sub" id="screenSub">Lernhelfer</div>
+    </div>
+    <div class="spacer"></div>
+    <button class="iconbtn" id="settingsBtn" aria-label="Settings">⚙︎</button>
+  </div>
+
+  <section class="screen" id="screen-onboarding">
+    <div class="hero">
+      <h1>Willkommen / Welcome</h1>
+      <p>Ein Lernhelfer für Schüler*innen (13 J.) und Eltern. Fotografiere Schulmaterial, bekomme Lernziele, Karteikarten, Aufgaben und Quiz.</p>
+    </div>
+    <div class="card">
+      <h3>Ersteinrichtung</h3>
+      <label class="label">Name des Kindes / Child's name</label>
+      <input class="input" id="ob-child" placeholder="z. B. Mia" />
+      <div style="height:10px"></div>
+      <label class="label">Eltern-PIN (4–6 Ziffern) / Parent PIN</label>
+      <input class="input" id="ob-pin" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="z. B. 1234" />
+      <div style="height:10px"></div>
+      <label class="label">Claude API-Key (sk-ant-...) — wird nur lokal auf diesem Gerät gespeichert</label>
+      <input class="input" id="ob-key" type="password" placeholder="sk-ant-…" autocomplete="off" />
+      <div class="muted" style="margin-top:6px">Key-Anleitung: console.anthropic.com &rarr; API Keys. Du kannst ihn später in den Einstellungen ändern.</div>
+      <div style="height:14px"></div>
+      <button class="btn" id="ob-save">Starten / Start</button>
+    </div>
+  </section>
+
+  <section class="screen" id="screen-mode">
+    <div class="hero">
+      <h1 id="hero-hi">Hallo!</h1>
+      <p>Wer bist du gerade?</p>
+    </div>
+    <div class="tiles">
+      <button class="tile parent" id="tile-parent">
+        <div class="emoji">👪</div>
+        <div>
+          <h2>Eltern</h2>
+          <div class="desc">Material hochladen, Zusammenfassung, Antwortschlüssel, Punkte & Belohnungen.</div>
+        </div>
+      </button>
+      <button class="tile kid" id="tile-kid">
+        <div class="emoji">🎒</div>
+        <div>
+          <h2>Schüler*in</h2>
+          <div class="desc">Karteikarten lernen, Quiz machen, Punkte sammeln.</div>
+        </div>
+      </button>
+    </div>
+    <div class="card">
+      <h3>Aktuelle Lernrunden</h3>
+      <div id="recentSessions" class="muted">Noch keine Lernrunden. Wechsle in den Eltern-Modus, um Fotos hochzuladen.</div>
+    </div>
+  </section>
+
+  <section class="screen" id="screen-pin">
+    <div class="card">
+      <h3>Eltern-PIN</h3>
+      <div class="muted">Gib den PIN ein, um in den Eltern-Modus zu gelangen.</div>
+      <div style="height:10px"></div>
+      <input class="input" id="pin-input" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="PIN" type="password" />
+      <div style="height:10px"></div>
+      <button class="btn" id="pin-submit">Entsperren / Unlock</button>
+      <div id="pin-error" class="muted" style="color:#fca5a5; margin-top: 8px; display:none">Falscher PIN.</div>
+    </div>
+  </section>
+
+  <section class="screen" id="screen-parent">
+    <div class="hero">
+      <h1>Eltern-Modus</h1>
+      <p>Lade Fotos von Schulbüchern, Notizen oder Lernzielen hoch. Camille erstellt Zusammenfassungen, Karteikarten und Quizfragen.</p>
+    </div>
+    <div class="card">
+      <h3>Neue Lernrunde starten</h3>
+      <div class="muted">Optional Titel, dann Fotos aus der Kamera oder der Galerie.</div>
+      <div style="height:8px"></div>
+      <input class="input" id="new-title" placeholder="Fachthema / Topic (optional) — z. B. Biologie: Zellen" />
+      <div style="height:10px"></div>
+      <div class="row" style="gap:8px">
+        <label class="btn secondary" style="flex:1">
+          📷 Kamera
+          <input type="file" id="capture" accept="image/*" capture="environment" multiple style="display:none" />
+        </label>
+        <label class="btn ghost" style="flex:1">
+          🖼️ Galerie
+          <input type="file" id="gallery" accept="image/*" multiple style="display:none" />
+        </label>
+      </div>
+      <div class="thumbs" id="thumbs"></div>
+      <div style="height:10px"></div>
+      <button class="btn" id="process-btn" disabled>✨ Lernmaterial erstellen</button>
+      <div class="muted" style="margin-top:8px">Du kannst mehrere Fotos hochladen, bevor du auf &bdquo;erstellen&ldquo; tippst.</div>
+    </div>
+
+    <div class="card">
+      <h3>Lernrunden</h3>
+      <div id="parentSessions"></div>
+    </div>
+
+    <div class="card">
+      <h3>Belohnungen</h3>
+      <div id="rewardsList"></div>
+      <div class="row" style="margin-top:10px">
+        <input class="input" id="newRewardName" placeholder="Neue Belohnung (z. B. 30 Min Bildschirmzeit)" />
+        <input class="input" id="newRewardCost" inputmode="numeric" style="max-width: 90px" placeholder="Punkte" />
+      </div>
+      <button class="btn small secondary mt" id="addReward">+ Belohnung hinzufügen</button>
+    </div>
+  </section>
+
+  <section class="screen" id="screen-session">
+    <div id="session-body"></div>
+  </section>
+
+  <section class="screen kid-wrap" id="screen-kid">
+    <div class="hero">
+      <h1 id="kid-hello">Hi!</h1>
+      <p>Wähle eine Lernrunde. Sammle Punkte und löse sie später bei deinen Eltern ein.</p>
+    </div>
+    <div class="card" style="display:flex;align-items:center;gap:10px;">
+      <div>
+        <div class="muted">Deine Punkte</div>
+        <div style="font-size:22px;font-weight:800" id="kidPoints">0</div>
+      </div>
+      <div class="spacer" style="flex:1"></div>
+      <button class="btn small secondary" id="kidRewards">🎁 Belohnungen</button>
+    </div>
+    <div class="card">
+      <h3>Lernrunden</h3>
+      <div id="kidSessions" class="muted">Deine Eltern haben noch keine Lernrunde erstellt.</div>
+    </div>
+  </section>
+
+  <section class="screen" id="screen-kid-session">
+    <div id="kid-session-body"></div>
+  </section>
+
+  <section class="screen" id="screen-settings">
+    <div class="card">
+      <h3>Einstellungen</h3>
+      <label class="label">Name des Kindes</label>
+      <input class="input" id="set-child" />
+      <div style="height:10px"></div>
+      <label class="label">Eltern-PIN</label>
+      <input class="input" id="set-pin" type="password" inputmode="numeric" maxlength="6" />
+      <div style="height:10px"></div>
+      <label class="label">Claude API Key</label>
+      <input class="input" id="set-key" type="password" autocomplete="off" />
+      <div style="height:10px"></div>
+      <label class="label">Modell</label>
+      <select class="input" id="set-model">
+        <option value="claude-sonnet-4-6">Claude Sonnet 4.6 (empfohlen)</option>
+        <option value="claude-opus-4-6">Claude Opus 4.6 (beste Qualität)</option>
+        <option value="claude-haiku-4-5-20251001">Claude Haiku 4.5 (schnell)</option>
+      </select>
+      <div style="height:14px"></div>
+      <button class="btn" id="set-save">Speichern</button>
+      <button class="btn ghost mt" id="set-reset">Alle Daten löschen</button>
+      <div class="muted mt">Alle Daten liegen nur auf diesem Gerät (localStorage). Fotos werden nur zur Verarbeitung an Anthropic gesendet, wenn du „Lernmaterial erstellen" drückst.</div>
+    </div>
+  </section>
+</div>
+
+<nav class="tabbar hidden" id="tabbar">
+  <button data-tab="home"><span>🏠</span><span>Start</span><span class="dot"></span></button>
+  <button data-tab="new"><span>📷</span><span>Neu</span><span class="dot"></span></button>
+  <button data-tab="rewards"><span>🎁</span><span>Belohnungen</span><span class="dot"></span></button>
+  <button data-tab="settings"><span>⚙︎</span><span>Einstellungen</span><span class="dot"></span></button>
+</nav>
+
+<div class="loading-overlay" id="loading">
+  <div class="spinner"></div>
+  <div id="loadingMsg">Material wird analysiert…</div>
+  <div class="muted" id="loadingSub">Das kann 15–40 Sekunden dauern.</div>
+</div>
+
+<div class="modal-bg" id="modal-bg">
+  <div class="modal" id="modal-body"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const LS_KEY = 'camille.v1';
+const emptyState = () => ({
+  settings: { childName: '', parentPIN: '', apiKey: '', model: 'claude-sonnet-4-6' },
+  sessions: [],
+  rewards: [],
+  points: 0,
+  redemptions: []
+});
+let state = loadState();
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(LS_KEY);
+    if (!raw) return emptyState();
+    const s = JSON.parse(raw);
+    return Object.assign(emptyState(), s);
+  } catch (e) { return emptyState(); }
+}
+function saveState() {
+  try { localStorage.setItem(LS_KEY, JSON.stringify(state)); }
+  catch (e) { toast('Speicher voll — ältere Lernrunden löschen.'); }
+}
+function uuid(){ return 'id-'+Math.random().toString(36).slice(2)+'-'+Date.now().toString(36); }
+
+const screens = ['onboarding','mode','pin','parent','session','kid','kid-session','settings'];
+let screen = 'onboarding';
+let screenHistory = [];
+function show(name, push=true) {
+  if (push && screen !== name) screenHistory.push(screen);
+  for (const s of screens) document.getElementById('screen-'+s).classList.toggle('active', s === name);
+  screen = name;
+  document.getElementById('backBtn').style.display = screenHistory.length ? '' : 'none';
+  const tabbar = document.getElementById('tabbar');
+  tabbar.classList.toggle('hidden', !(name === 'parent'));
+  updateTopbar();
+  window.scrollTo({ top: 0 });
+}
+function back() {
+  const prev = screenHistory.pop();
+  if (prev) show(prev, false);
+  else show('mode', false);
+}
+document.getElementById('backBtn').addEventListener('click', back);
+
+function updateTopbar() {
+  const titles = {
+    'onboarding': ['Camille', 'Willkommen'],
+    'mode': ['Camille', state.settings.childName || 'Lernhelfer'],
+    'pin': ['Eltern-Login', 'Bitte PIN eingeben'],
+    'parent': ['Eltern', 'Material & Aufgaben'],
+    'session': ['Lernrunde', ''],
+    'kid': [state.settings.childName || 'Schüler*in', 'Lernen & Punkte'],
+    'kid-session': ['Lernrunde', ''],
+    'settings': ['Einstellungen', ''],
+  };
+  const [t, s] = titles[screen] || ['Camille',''];
+  document.getElementById('screenTitle').textContent = t;
+  document.getElementById('screenSub').textContent = s;
+}
+
+let toastTimer = null;
+function toast(msg, ms=2200) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=> t.classList.remove('show'), ms);
+}
+function openModal(html) {
+  document.getElementById('modal-body').innerHTML = html;
+  document.getElementById('modal-bg').classList.add('show');
+}
+function closeModal() { document.getElementById('modal-bg').classList.remove('show'); }
+document.getElementById('modal-bg').addEventListener('click', (e)=>{
+  if (e.target.id === 'modal-bg') closeModal();
+});
+
+function escapeHtml(str='') {
+  return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[c]));
+}
+function escapeHtmlNL(str='') { return escapeHtml(str).replace(/\r?\n/g, '<br>'); }
+function fmtDate(d) {
+  const dt = new Date(d);
+  return dt.toLocaleDateString(undefined,{day:'2-digit', month:'short'}) + ' · ' +
+         dt.toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'});
+}
+
+async function fileToCompressedDataURL(file, maxDim=1600, quality=0.82) {
+  const bmp = await createImageBitmap(file);
+  let { width, height } = bmp;
+  const scale = Math.min(1, maxDim / Math.max(width, height));
+  const w = Math.round(width*scale), h = Math.round(height*scale);
+  const canvas = document.createElement('canvas');
+  canvas.width = w; canvas.height = h;
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(bmp, 0, 0, w, h);
+  return canvas.toDataURL('image/jpeg', quality);
+}
+function dataURLtoBase64(d) { return d.split(',')[1]; }
+function dataURLMime(d) { const m = d.match(/^data:(.+?);/); return m ? m[1] : 'image/jpeg'; }
+
+async function callClaudeWithPhotos(photos, optionalTitle) {
+  if (!state.settings.apiKey) throw new Error('Kein Claude API-Key gesetzt. Bitte in Einstellungen hinzufügen.');
+  const childName = state.settings.childName || 'das Kind';
+
+  const system = `You are Camille, a warm bilingual (English/German) study coach for a 13-year-old secondary-school student named ${childName}.
+The user will give you photos of school materials (book pages, worksheets, notes, learning objectives). Text may be German, English, or mixed.
+Your job: read the photos carefully, then produce structured study content.
+Adapt all student-facing language to a 13-year-old's reading level. Keep tone friendly, concrete, never condescending.
+Always return VALID JSON with exactly this shape and nothing else (no markdown fences, no prose):
+
+{
+  "title": "Short topic title in German, max 60 chars",
+  "subject": "Short subject label, e.g. Biologie, Mathematik, Englisch",
+  "detected_language": "de" | "en" | "mixed",
+  "extracted_text_excerpt": "~200 characters of the key raw material text, verbatim",
+  "learning_goals": ["3–7 bullet points in German describing what the student should be able to do"],
+  "parent_summary_en": "120–180 word parent summary in English: topic, key concepts, suggested ways to help at home, typical pitfalls",
+  "parent_summary_de": "120–180 word parent summary in German, same info, written for a German-speaking parent",
+  "cue_cards": [
+    {"front": "German question or key term", "back": "German answer / explanation, 1–3 sentences"}
+  ],
+  "written_questions": [
+    {"q": "Open question in German", "model_answer": "Short German model answer for the parent / answer key", "hint": "Optional one-line German hint for the student"}
+  ],
+  "mcq": [
+    {"q": "Question in German", "options": ["A","B","C","D"], "correct": 0, "explanation": "1-sentence German explanation why the correct option is correct"}
+  ]
+}
+
+Rules:
+- Cue cards, written questions, and MCQs must be ENTIRELY in German — the student's study language — regardless of the source language.
+- Parent summaries: one in English, one in German. Both must cover the same substance.
+- 8–12 cue cards, 5–7 written questions, exactly 8 MCQs with 4 options each and correct is 0-3.
+- If material is too sparse / unclear, still return best-effort content. Never refuse.
+- Keep explanations age-appropriate for a 13-year-old.
+- Do not invent facts not supported by the photos.`;
+
+  const content = [];
+  for (const p of photos) {
+    content.push({
+      type: 'image',
+      source: { type: 'base64', media_type: dataURLMime(p), data: dataURLtoBase64(p) }
+    });
+  }
+  content.push({
+    type: 'text',
+    text: `Please analyze the attached ${photos.length} photo(s) of school material${optionalTitle ? ` (topic hint from parent: "${optionalTitle}")` : ''} and produce the JSON described in the system message. Return only JSON.`
+  });
+
+  const body = {
+    model: state.settings.model || 'claude-sonnet-4-6',
+    max_tokens: 4096,
+    system,
+    messages: [{ role: 'user', content }]
+  };
+
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'content-type': 'application/json',
+      'x-api-key': state.settings.apiKey,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
+    body: JSON.stringify(body)
+  });
+  if (!res.ok) {
+    let msg = res.status + ' ' + res.statusText;
+    try { const j = await res.json(); msg += ' — ' + (j.error?.message || JSON.stringify(j)); } catch {}
+    throw new Error('API-Fehler: ' + msg);
+  }
+  const j = await res.json();
+  const text = (j.content || []).filter(x => x.type==='text').map(x=>x.text).join('\n').trim();
+  const jsonText = extractJson(text);
+  try { return JSON.parse(jsonText); }
+  catch (e) { throw new Error('Konnte Antwort nicht als JSON lesen. Versuche es nochmal.'); }
+}
+
+function extractJson(text) {
+  const fence = text.match(/```(?:json)?\s*([\s\S]*?)```/);
+  if (fence) text = fence[1];
+  const start = text.indexOf('{');
+  const end = text.lastIndexOf('}');
+  if (start === -1 || end === -1) return text;
+  return text.slice(start, end+1);
+}
+
+document.getElementById('ob-save').addEventListener('click', () => {
+  const child = document.getElementById('ob-child').value.trim();
+  const pin = document.getElementById('ob-pin').value.trim();
+  const key = document.getElementById('ob-key').value.trim();
+  if (!child) return toast('Bitte Namen des Kindes eingeben.');
+  if (!/^\d{4,6}$/.test(pin)) return toast('PIN muss 4–6 Ziffern haben.');
+  state.settings.childName = child;
+  state.settings.parentPIN = pin;
+  state.settings.apiKey = key;
+  saveState();
+  toast('Fertig! Viel Erfolg beim Lernen 🎉');
+  show('mode');
+  refreshAll();
+});
+
+document.getElementById('tile-parent').addEventListener('click', () => {
+  if (!state.settings.parentPIN) { show('parent'); return; }
+  document.getElementById('pin-input').value = '';
+  document.getElementById('pin-error').style.display = 'none';
+  show('pin');
+  setTimeout(()=> document.getElementById('pin-input').focus(), 150);
+});
+document.getElementById('tile-kid').addEventListener('click', () => {
+  show('kid'); refreshKid();
+});
+document.getElementById('pin-submit').addEventListener('click', () => {
+  const v = document.getElementById('pin-input').value.trim();
+  if (v === state.settings.parentPIN) {
+    show('parent'); refreshParent();
+  } else {
+    document.getElementById('pin-error').style.display = '';
+  }
+});
+document.getElementById('pin-input').addEventListener('keydown', (e)=>{
+  if (e.key === 'Enter') document.getElementById('pin-submit').click();
+});
+
+document.getElementById('settingsBtn').addEventListener('click', () => {
+  document.getElementById('set-child').value = state.settings.childName || '';
+  document.getElementById('set-pin').value   = state.settings.parentPIN || '';
+  document.getElementById('set-key').value   = state.settings.apiKey || '';
+  document.getElementById('set-model').value = state.settings.model || 'claude-sonnet-4-6';
+  show('settings');
+});
+document.getElementById('set-save').addEventListener('click', () => {
+  const child = document.getElementById('set-child').value.trim();
+  const pin = document.getElementById('set-pin').value.trim();
+  const key = document.getElementById('set-key').value.trim();
+  const model = document.getElementById('set-model').value;
+  if (pin && !/^\d{4,6}$/.test(pin)) return toast('PIN: 4–6 Ziffern.');
+  state.settings.childName = child || state.settings.childName;
+  state.settings.parentPIN = pin;
+  state.settings.apiKey = key;
+  state.settings.model = model;
+  saveState(); toast('Gespeichert.');
+  back(); refreshAll();
+});
+document.getElementById('set-reset').addEventListener('click', () => {
+  openModal(`<h3>Alle Daten löschen?</h3>
+    <p class="muted">PIN, Key, Lernrunden, Punkte und Belohnungen werden entfernt.</p>
+    <div class="row"><button class="btn danger" id="confirmReset">Ja, alles löschen</button>
+    <button class="btn ghost" id="cancelReset">Abbrechen</button></div>`);
+  document.getElementById('cancelReset').onclick = closeModal;
+  document.getElementById('confirmReset').onclick = () => {
+    state = emptyState(); saveState(); closeModal(); toast('Alles gelöscht.');
+    screenHistory = []; show('onboarding'); refreshAll();
+  };
+});
+
+document.querySelectorAll('.tabbar button').forEach(b => {
+  b.addEventListener('click', () => {
+    const tab = b.dataset.tab;
+    document.querySelectorAll('.tabbar button').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    if (tab === 'home') { show('parent', false); refreshParent(); }
+    else if (tab === 'new') { show('parent', false); refreshParent();
+      document.getElementById('new-title').scrollIntoView({behavior:'smooth', block:'center'}); }
+    else if (tab === 'rewards') { show('parent', false); refreshParent();
+      document.getElementById('rewardsList').scrollIntoView({behavior:'smooth', block:'center'}); }
+    else if (tab === 'settings') { document.getElementById('settingsBtn').click(); }
+  });
+});
+
+let stagedPhotos = [];
+const thumbsEl = document.getElementById('thumbs');
+
+function renderThumbs() {
+  thumbsEl.innerHTML = '';
+  stagedPhotos.forEach((src, i) => {
+    const div = document.createElement('div');
+    div.className = 'thumb';
+    div.innerHTML = `<img src="${src}" /><button class="rm" data-i="${i}" aria-label="remove">×</button>`;
+    thumbsEl.appendChild(div);
+  });
+  document.getElementById('process-btn').disabled = stagedPhotos.length === 0 || !state.settings.apiKey;
+}
+thumbsEl.addEventListener('click', (e) => {
+  const b = e.target.closest('.rm'); if (!b) return;
+  stagedPhotos.splice(+b.dataset.i, 1); renderThumbs();
+});
+
+async function handleFiles(files) {
+  const arr = Array.from(files || []);
+  if (!arr.length) return;
+  for (const f of arr) {
+    try {
+      const data = await fileToCompressedDataURL(f, 1600, 0.82);
+      stagedPhotos.push(data);
+    } catch (e) { console.error(e); toast('Ein Foto konnte nicht geladen werden.'); }
+  }
+  renderThumbs();
+}
+document.getElementById('capture').addEventListener('change', (e)=> handleFiles(e.target.files));
+document.getElementById('gallery').addEventListener('change', (e)=> handleFiles(e.target.files));
+
+document.getElementById('process-btn').addEventListener('click', async () => {
+  if (!state.settings.apiKey) { toast('Bitte Claude API-Key in Einstellungen eintragen.'); return; }
+  if (stagedPhotos.length === 0) return;
+  const title = document.getElementById('new-title').value.trim();
+  const loader = document.getElementById('loading');
+  document.getElementById('loadingMsg').textContent = 'Material wird analysiert…';
+  loader.classList.add('show');
+  try {
+    const data = await callClaudeWithPhotos(stagedPhotos, title);
+    const thumbs = await Promise.all(stagedPhotos.map(async p => await reencodeSmaller(p, 320, 0.7)));
+    const session = {
+      id: uuid(),
+      createdAt: new Date().toISOString(),
+      userTitle: title,
+      thumbs,
+      data,
+      progress: { cueCardsStudied: 0, mcqTaken: false, mcqScore: 0, writtenAnswers: [] }
+    };
+    state.sessions.unshift(session);
+    saveState();
+    stagedPhotos = [];
+    renderThumbs();
+    document.getElementById('new-title').value = '';
+    toast('Fertig! 🎉');
+    openSession(session.id);
+  } catch (e) {
+    console.error(e);
+    toast(e.message || 'Fehler beim Erstellen.');
+  } finally {
+    loader.classList.remove('show');
+  }
+});
+
+async function reencodeSmaller(dataURL, maxDim, q) {
+  const img = new Image(); img.src = dataURL;
+  await new Promise((r,j)=>{ img.onload=r; img.onerror=j; });
+  const scale = Math.min(1, maxDim / Math.max(img.width, img.height));
+  const w = Math.round(img.width*scale), h = Math.round(img.height*scale);
+  const c = document.createElement('canvas'); c.width=w; c.height=h;
+  c.getContext('2d').drawImage(img, 0, 0, w, h);
+  return c.toDataURL('image/jpeg', q);
+}
+
+function refreshParent() {
+  const list = document.getElementById('parentSessions');
+  if (!state.sessions.length) {
+    list.innerHTML = `<div class="muted">Noch keine Lernrunden. Fotografiere eine Buchseite oben.</div>`;
+  } else {
+    list.innerHTML = state.sessions.map(s => `
+      <div class="session-item" data-id="${s.id}">
+        <div style="width:46px;height:46px;border-radius:10px;overflow:hidden;background:#000">
+          ${s.thumbs && s.thumbs[0] ? `<img src="${s.thumbs[0]}" style="width:100%;height:100%;object-fit:cover"/>` : ''}
+        </div>
+        <div style="flex:1;min-width:0">
+          <div class="s-title">${escapeHtml(s.data?.title || s.userTitle || 'Lernrunde')}</div>
+          <div class="s-meta">${escapeHtml(s.data?.subject || '')} · ${fmtDate(s.createdAt)}</div>
+        </div>
+        <span class="chip">${(s.data?.cue_cards||[]).length} Karten</span>
+      </div>`).join('');
+    list.querySelectorAll('.session-item').forEach(el => {
+      el.addEventListener('click', () => openSession(el.dataset.id));
+    });
+  }
+  renderRewards();
+  renderThumbs();
+
+  if (!state.settings.apiKey) {
+    if (!document.getElementById('apiKeyNotice')) {
+      const n = document.createElement('div');
+      n.id = 'apiKeyNotice'; n.className = 'card';
+      n.innerHTML = `<h3>⚠ Kein API-Key</h3><div class="muted">Um Material automatisch auszuwerten, brauchst du einen Claude API-Key.</div>
+        <button class="btn small mt" onclick="document.getElementById('settingsBtn').click()">Jetzt hinzufügen</button>`;
+      document.getElementById('screen-parent').insertBefore(n, document.getElementById('screen-parent').children[1]);
+    }
+  } else {
+    const ex = document.getElementById('apiKeyNotice'); if (ex) ex.remove();
+  }
+}
+
+function renderRewards() {
+  const el = document.getElementById('rewardsList');
+  if (!state.rewards.length) { el.innerHTML = `<div class="muted">Noch keine Belohnungen. Füge z. B. „30 Min Bildschirmzeit / 20 Punkte" hinzu.</div>`; return; }
+  el.innerHTML = state.rewards.map(r => `
+    <div class="reward-item">
+      <div class="r-name">${escapeHtml(r.name)}</div>
+      <div class="r-cost">${r.cost} P</div>
+      <button class="btn small ghost" data-del="${r.id}">×</button>
+    </div>`).join('');
+  el.querySelectorAll('[data-del]').forEach(b => {
+    b.addEventListener('click', () => {
+      state.rewards = state.rewards.filter(r => r.id !== b.dataset.del);
+      saveState(); renderRewards();
+    });
+  });
+}
+document.getElementById('addReward').addEventListener('click', () => {
+  const n = document.getElementById('newRewardName').value.trim();
+  const c = parseInt(document.getElementById('newRewardCost').value, 10);
+  if (!n || !c || c <= 0) return toast('Name und Punkte eingeben.');
+  state.rewards.push({ id: uuid(), name: n, cost: c });
+  document.getElementById('newRewardName').value = '';
+  document.getElementById('newRewardCost').value = '';
+  saveState(); renderRewards();
+});
+
+function openSession(id) {
+  const s = state.sessions.find(x => x.id === id); if (!s) return;
+  show('session');
+  renderParentSession(s);
+}
+
+function renderParentSession(s) {
+  const d = s.data || {};
+  const body = document.getElementById('session-body');
+  const goals = (d.learning_goals||[]).map(g => `<li>${escapeHtml(g)}</li>`).join('') || '<li class="muted">Keine Lernziele erkannt.</li>';
+
+  body.innerHTML = `
+    <div class="hero">
+      <h1>${escapeHtml(d.title || s.userTitle || 'Lernrunde')}</h1>
+      <p>${escapeHtml(d.subject || '')} · ${fmtDate(s.createdAt)}</p>
+    </div>
+
+    <div class="card">
+      <h3>🎯 Lernziele</h3>
+      <ul class="list-pad">${goals}</ul>
+    </div>
+
+    <div class="card">
+      <h3>📝 Eltern-Zusammenfassung</h3>
+      <details class="accordion" open><summary>Deutsch</summary>
+        <div style="margin-top:8px">${escapeHtmlNL(d.parent_summary_de||'')}</div></details>
+      <details class="accordion" style="margin-top:8px"><summary>English</summary>
+        <div style="margin-top:8px">${escapeHtmlNL(d.parent_summary_en||'')}</div></details>
+      <div class="row mt-2" style="gap:8px; flex-wrap:wrap">
+        <button class="btn small secondary" data-share="summary-de">WhatsApp DE</button>
+        <button class="btn small secondary" data-share="summary-en">WhatsApp EN</button>
+        <button class="btn small ghost" data-share="summary-both">WhatsApp beide</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>🗂 Karteikarten (Deutsch)</h3>
+      <div class="muted">${(d.cue_cards||[]).length} Karten</div>
+      <button class="btn mt" data-goto="flash">🎴 Karteikarten öffnen</button>
+      <button class="btn secondary mt" data-share="cues">📤 Per WhatsApp teilen</button>
+    </div>
+
+    <div class="card">
+      <h3>✍️ Offene Fragen</h3>
+      <div class="muted">${(d.written_questions||[]).length} Fragen (mit Musterlösungen)</div>
+      <button class="btn mt" data-goto="written">Fragen anzeigen</button>
+      <button class="btn secondary mt" data-share="written">📤 Fragen per WhatsApp</button>
+    </div>
+
+    <div class="card">
+      <h3>✅ Multiple-Choice Quiz</h3>
+      <div class="muted">${(d.mcq||[]).length} Fragen. Antwortschlüssel hier sichtbar, für das Kind versteckt.</div>
+      <button class="btn mt" data-goto="mcq-parent">Antwortschlüssel zeigen</button>
+      <button class="btn secondary mt" data-share="mcq">📤 Quiz per WhatsApp (ohne Antworten)</button>
+      ${s.progress?.mcqTaken ? `<div class="mt muted">Kind hat ${s.progress.mcqScore} von ${(d.mcq||[]).length} richtig gehabt.</div>` : ''}
+    </div>
+
+    <div class="card">
+      <h3>🏆 Punkte & Belohnungen</h3>
+      <div class="row">
+        <div>Gesamtpunkte <strong>${state.points}</strong></div>
+        <div class="spacer" style="flex:1"></div>
+        <button class="btn small secondary" id="awardBtn">+ Punkte vergeben</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <button class="btn danger ghost" id="deleteSession">Lernrunde löschen</button>
+    </div>
+  `;
+
+  body.querySelectorAll('[data-goto]').forEach(b => b.addEventListener('click', () => {
+    const t = b.dataset.goto;
+    if (t === 'flash') openFlashcards(s, 'parent');
+    else if (t === 'written') openWritten(s, 'parent');
+    else if (t === 'mcq-parent') openMcq(s, 'parent');
+  }));
+  body.querySelectorAll('[data-share]').forEach(b => b.addEventListener('click', () => {
+    shareViaWhatsApp(s, b.dataset.share);
+  }));
+  document.getElementById('awardBtn').addEventListener('click', () => awardPoints(s));
+  document.getElementById('deleteSession').addEventListener('click', () => {
+    openModal(`<h3>Lernrunde löschen?</h3>
+      <div class="row mt"><button class="btn danger" id="delYes">Löschen</button>
+      <button class="btn ghost" id="delNo">Abbrechen</button></div>`);
+    document.getElementById('delNo').onclick = closeModal;
+    document.getElementById('delYes').onclick = () => {
+      state.sessions = state.sessions.filter(x => x.id !== s.id);
+      saveState(); closeModal(); toast('Gelöscht.'); back(); refreshParent();
+    };
+  });
+}
+
+function awardPoints(s) {
+  openModal(`<h3>Punkte für „${escapeHtml(s.data?.title||s.userTitle||'Lernrunde')}" vergeben</h3>
+    <label class="label">Punkte</label>
+    <input class="input" id="aw-points" inputmode="numeric" value="5" />
+    <label class="label mt">Notiz (optional)</label>
+    <input class="input" id="aw-note" placeholder="z. B. toll mitgearbeitet" />
+    <div class="row mt-2"><button class="btn" id="aw-save">Vergeben</button>
+    <button class="btn ghost" id="aw-cancel">Abbrechen</button></div>`);
+  document.getElementById('aw-cancel').onclick = closeModal;
+  document.getElementById('aw-save').onclick = () => {
+    const p = parseInt(document.getElementById('aw-points').value,10) || 0;
+    const n = document.getElementById('aw-note').value.trim();
+    if (p === 0) return closeModal();
+    state.points += p;
+    state.redemptions.unshift({ id: uuid(), when: new Date().toISOString(), sessionId: s.id, type: 'earn', points: p, note: n });
+    saveState(); closeModal(); toast((p>0?'+':'')+p+' Punkte vergeben');
+    renderParentSession(s);
+  };
+}
+
+function openFlashcards(s, mode) {
+  show(mode === 'kid' ? 'kid-session' : 'session');
+  const cards = (s.data?.cue_cards || []);
+  const container = mode==='kid' ? document.getElementById('kid-session-body') : document.getElementById('session-body');
+  if (!cards.length) { container.innerHTML = `<div class="card">Keine Karten.</div>`; return; }
+  let i = 0, flipped = false;
+  const render = () => {
+    const c = cards[i];
+    container.innerHTML = `
+      <div class="hero"><h1>🎴 Karteikarten</h1><p>${escapeHtml(s.data?.title||'')}</p></div>
+      <div class="deck-controls">
+        <button class="btn small ghost" id="fc-prev">◀ Zurück</button>
+        <div class="progress">${i+1} / ${cards.length}</div>
+        <button class="btn small ghost" id="fc-next">Weiter ▶</button>
+      </div>
+      <div class="flashdeck">
+        <div class="flashcard${flipped?' flipped':''}" id="fc">
+          <div class="face front">${escapeHtmlNL(c.front||'')}</div>
+          <div class="face back">${escapeHtmlNL(c.back||'')}</div>
+        </div>
+      </div>
+      <div class="pad center muted" style="margin-top:6px">Tippe auf die Karte zum Umdrehen.</div>
+      ${mode==='kid' ? `<div class="pad mt-2"><button class="btn small secondary" id="fc-done">Fertig lernen — zurück</button></div>` : ''}
+    `;
+    document.getElementById('fc').onclick = ()=>{ flipped=!flipped; render(); };
+    document.getElementById('fc-prev').onclick = ()=>{ if (i>0){ i--; flipped=false; render(); } };
+    document.getElementById('fc-next').onclick = ()=>{
+      if (i < cards.length-1){ i++; flipped=false; render(); }
+      else if (mode==='kid') { s.progress.cueCardsStudied = Math.max(s.progress.cueCardsStudied||0, cards.length); saveState(); toast('Gut gemacht! 🎉'); back(); }
+    };
+    const done = document.getElementById('fc-done');
+    if (done) done.onclick = () => { s.progress.cueCardsStudied = Math.max(s.progress.cueCardsStudied||0, i+1); saveState(); back(); };
+  };
+  render();
+}
+
+function openWritten(s, mode) {
+  show(mode === 'kid' ? 'kid-session' : 'session');
+  const q = (s.data?.written_questions || []);
+  const container = mode==='kid' ? document.getElementById('kid-session-body') : document.getElementById('session-body');
+  if (!q.length) { container.innerHTML = `<div class="card">Keine offenen Fragen.</div>`; return; }
+  if (mode === 'parent') {
+    container.innerHTML = `
+      <div class="hero"><h1>✍️ Offene Fragen</h1><p>Antwortschlüssel — nur für Eltern.</p></div>
+      ${q.map((x,i)=>`
+        <div class="card">
+          <div class="muted">Frage ${i+1}</div>
+          <div style="font-weight:600">${escapeHtml(x.q)}</div>
+          ${x.hint ? `<div class="muted mt">Hinweis: ${escapeHtml(x.hint)}</div>`:''}
+          <details class="accordion mt"><summary>✅ Musterlösung</summary>
+            <div style="margin-top:8px">${escapeHtmlNL(x.model_answer||'')}</div></details>
+          ${s.progress?.writtenAnswers?.[i] ? `<details class="accordion mt"><summary>Antwort des Kindes</summary>
+            <div style="margin-top:8px">${escapeHtmlNL(s.progress.writtenAnswers[i])}</div></details>`:''}
+        </div>`).join('')}
+    `;
+  } else {
+    container.innerHTML = `
+      <div class="hero"><h1>✍️ Schreibaufgaben</h1><p>Beantworte die Fragen auf Deutsch.</p></div>
+      ${q.map((x,i)=>`
+        <div class="card">
+          <div class="muted">Frage ${i+1}</div>
+          <div style="font-weight:600">${escapeHtml(x.q)}</div>
+          ${x.hint ? `<details class="accordion mt"><summary>💡 Hinweis</summary><div style="margin-top:6px">${escapeHtml(x.hint)}</div></details>`:''}
+          <label class="label mt-2">Deine Antwort</label>
+          <textarea class="input" data-w-idx="${i}">${escapeHtml(s.progress?.writtenAnswers?.[i] || '')}</textarea>
+        </div>`).join('')}
+      <div class="pad mt-2"><button class="btn" id="saveWritten">Antworten speichern</button></div>
+    `;
+    document.getElementById('saveWritten').onclick = () => {
+      const answers = [];
+      container.querySelectorAll('[data-w-idx]').forEach(t => answers[+t.dataset.wIdx] = t.value);
+      s.progress.writtenAnswers = answers;
+      saveState(); toast('Gespeichert! Zeig sie deinen Eltern. 👍'); back();
+    };
+  }
+}
+
+function openMcq(s, mode) {
+  show(mode === 'kid' ? 'kid-session' : 'session');
+  const mcq = (s.data?.mcq || []);
+  const container = mode==='kid' ? document.getElementById('kid-session-body') : document.getElementById('session-body');
+  if (!mcq.length) { container.innerHTML = `<div class="card">Kein Quiz.</div>`; return; }
+
+  if (mode === 'parent') {
+    container.innerHTML = `
+      <div class="hero"><h1>✅ MCQ — Antwortschlüssel</h1><p>Nur für Eltern sichtbar.</p></div>
+      ${mcq.map((q,i)=>`
+        <div class="card">
+          <div class="muted">Frage ${i+1}</div>
+          <div style="font-weight:600">${escapeHtml(q.q)}</div>
+          <div class="mt">
+            ${(q.options||[]).map((o,j)=>`
+              <div class="mcq-opt ${j===q.correct?'correct':''}">${String.fromCharCode(65+j)}. ${escapeHtml(o)}</div>
+            `).join('')}
+          </div>
+          <div class="muted mt"><strong>Richtig:</strong> ${String.fromCharCode(65+(q.correct||0))} — ${escapeHtml(q.explanation||'')}</div>
+        </div>`).join('')}
+    `;
+  } else {
+    let answers = Array(mcq.length).fill(null);
+    const render = () => {
+      container.innerHTML = `
+        <div class="hero"><h1>✅ MCQ Quiz</h1><p>Wähle pro Frage die beste Antwort. Viel Erfolg!</p></div>
+        ${mcq.map((q,i)=>`
+          <div class="card">
+            <div class="muted">Frage ${i+1} / ${mcq.length}</div>
+            <div style="font-weight:600">${escapeHtml(q.q)}</div>
+            <div class="mt">
+              ${(q.options||[]).map((o,j)=>`
+                <button class="mcq-opt ${answers[i]===j?'selected':''}" data-i="${i}" data-j="${j}">${String.fromCharCode(65+j)}. ${escapeHtml(o)}</button>
+              `).join('')}
+            </div>
+          </div>`).join('')}
+        <div class="pad mt-2"><button class="btn" id="submitMcq">Quiz abgeben</button></div>
+      `;
+      container.querySelectorAll('.mcq-opt').forEach(b => b.addEventListener('click', () => {
+        answers[+b.dataset.i] = +b.dataset.j; render();
+      }));
+      document.getElementById('submitMcq').onclick = () => {
+        if (answers.some(a => a === null)) { toast('Bitte alle Fragen beantworten.'); return; }
+        const score = mcq.reduce((acc,q,i)=> acc + (answers[i]===q.correct?1:0), 0);
+        s.progress.mcqTaken = true;
+        s.progress.mcqScore = score;
+        s.progress.mcqAnswers = answers;
+        state.points += score;
+        state.redemptions.unshift({ id: uuid(), when: new Date().toISOString(), sessionId: s.id, type:'earn', points: score, note: `MCQ: ${score}/${mcq.length}` });
+        saveState();
+        container.innerHTML = `
+          <div class="hero"><h1>Fertig! 🎉</h1><p>Deine Eltern sehen dein Ergebnis.</p></div>
+          <div class="card center">
+            <div style="font-size:40px">⭐</div>
+            <div style="font-size:28px;font-weight:800">${score} / ${mcq.length}</div>
+            <div class="muted mt">+${score} Punkte gesammelt</div>
+            <button class="btn mt-2" id="mcqBack">Zurück</button>
+          </div>`;
+        document.getElementById('mcqBack').onclick = () => { back(); refreshKid(); };
+      };
+    };
+    render();
+  }
+}
+
+function shareViaWhatsApp(s, kind) {
+  const d = s.data || {};
+  let txt = '';
+  const title = d.title || s.userTitle || 'Lernrunde';
+  if (kind === 'summary-de') txt = `📘 ${title} — Zusammenfassung\n\n${d.parent_summary_de||''}`;
+  else if (kind === 'summary-en') txt = `📘 ${title} — Summary\n\n${d.parent_summary_en||''}`;
+  else if (kind === 'summary-both') txt = `📘 ${title}\n\n🇩🇪 ${d.parent_summary_de||''}\n\n🇬🇧 ${d.parent_summary_en||''}`;
+  else if (kind === 'cues') txt = `🗂 Karteikarten — ${title}\n\n` + (d.cue_cards||[]).map((c,i)=>`${i+1}. ${c.front}\n➜ ${c.back}`).join('\n\n');
+  else if (kind === 'written') txt = `✍️ Offene Fragen — ${title}\n\n` + (d.written_questions||[]).map((q,i)=>`${i+1}. ${q.q}`).join('\n');
+  else if (kind === 'mcq') txt = `✅ Quiz — ${title}\n\n` + (d.mcq||[]).map((q,i)=>
+    `${i+1}. ${q.q}\n` + (q.options||[]).map((o,j)=>`   ${String.fromCharCode(65+j)}. ${o}`).join('\n')
+  ).join('\n\n');
+  const url = 'https://wa.me/?text=' + encodeURIComponent(txt);
+  window.open(url, '_blank', 'noopener');
+}
+
+function refreshKid() {
+  document.getElementById('kid-hello').textContent = 'Hi ' + (state.settings.childName || '') + '!';
+  document.getElementById('kidPoints').textContent = state.points;
+  const list = document.getElementById('kidSessions');
+  if (!state.sessions.length) {
+    list.innerHTML = `<div class="muted">Deine Eltern haben noch keine Lernrunde erstellt.</div>`;
+  } else {
+    list.innerHTML = state.sessions.map(s => `
+      <div class="session-item" data-id="${s.id}">
+        <div style="width:46px;height:46px;border-radius:10px;overflow:hidden;background:#000">
+          ${s.thumbs && s.thumbs[0] ? `<img src="${s.thumbs[0]}" style="width:100%;height:100%;object-fit:cover"/>` : ''}
+        </div>
+        <div style="flex:1;min-width:0">
+          <div class="s-title">${escapeHtml(s.data?.title || s.userTitle || 'Lernrunde')}</div>
+          <div class="s-meta">${(s.data?.cue_cards||[]).length} Karten · ${(s.data?.mcq||[]).length} MCQ ${s.progress?.mcqTaken?'· ✅':''}</div>
+        </div>
+        <span class="chip pink">Öffnen ▶</span>
+      </div>`).join('');
+    list.querySelectorAll('.session-item').forEach(el => {
+      el.addEventListener('click', () => openKidSession(el.dataset.id));
+    });
+  }
+}
+function openKidSession(id) {
+  const s = state.sessions.find(x => x.id === id); if (!s) return;
+  show('kid-session');
+  const body = document.getElementById('kid-session-body');
+  const d = s.data || {};
+  const goals = (d.learning_goals||[]).map(g => `<li>${escapeHtml(g)}</li>`).join('');
+  body.innerHTML = `
+    <div class="hero"><h1>${escapeHtml(d.title||s.userTitle||'Lernrunde')}</h1>
+      <p>${escapeHtml(d.subject||'')} · Wähle eine Aufgabe ⤵</p></div>
+    ${goals ? `<div class="card"><h3>🎯 Lernziele</h3><ul class="list-pad">${goals}</ul></div>`:''}
+    <div class="grid cols-2 pad">
+      <button class="btn" data-t="flash">🎴 Karteikarten<br><span style="font-weight:400;font-size:12px">${(d.cue_cards||[]).length} Karten</span></button>
+      <button class="btn secondary" data-t="written">✍️ Schreiben<br><span style="font-weight:400;font-size:12px">${(d.written_questions||[]).length} Fragen</span></button>
+    </div>
+    <div class="pad mt-2">
+      <button class="btn success" data-t="mcq">✅ MCQ Quiz starten<br><span style="font-weight:400;font-size:12px">${(d.mcq||[]).length} Fragen · +1 Punkt pro richtige Antwort</span></button>
+    </div>
+    ${s.progress?.mcqTaken ? `<div class="card center"><div class="muted">Dein letztes Quiz-Ergebnis</div>
+      <div style="font-size:24px;font-weight:800">${s.progress.mcqScore} / ${(d.mcq||[]).length}</div></div>`:''}
+  `;
+  body.querySelectorAll('[data-t]').forEach(b => b.addEventListener('click', () => {
+    const t = b.dataset.t;
+    if (t==='flash') openFlashcards(s,'kid');
+    else if (t==='written') openWritten(s,'kid');
+    else if (t==='mcq') openMcq(s,'kid');
+  }));
+}
+
+document.getElementById('kidRewards').addEventListener('click', () => {
+  if (!state.rewards.length) { toast('Noch keine Belohnungen verfügbar.'); return; }
+  openModal(`<h3>🎁 Belohnungen</h3>
+    <div class="muted">Deine Punkte: <strong>${state.points}</strong></div>
+    <div style="height:8px"></div>
+    ${state.rewards.map(r => `
+      <div class="reward-item">
+        <div class="r-name">${escapeHtml(r.name)}</div>
+        <div class="r-cost">${r.cost} P</div>
+        <button class="btn small ${state.points>=r.cost?'':'ghost'}" data-req="${r.id}" ${state.points<r.cost?'disabled':''}>Anfragen</button>
+      </div>`).join('')}
+    <div class="mt"><button class="btn ghost" id="closeRewards">Schließen</button></div>`);
+  document.getElementById('closeRewards').onclick = closeModal;
+  document.querySelectorAll('[data-req]').forEach(b => b.addEventListener('click', () => {
+    const r = state.rewards.find(x => x.id === b.dataset.req);
+    if (!r) return;
+    if (state.points < r.cost) return toast('Noch nicht genug Punkte.');
+    state.points -= r.cost;
+    state.redemptions.unshift({ id: uuid(), when: new Date().toISOString(), type:'redeem', points: -r.cost, note: r.name });
+    saveState(); closeModal(); toast('Belohnung angefragt! 🎉 Zeig es deinen Eltern.');
+    refreshKid();
+  }));
+});
+
+function refreshAll() {
+  document.getElementById('hero-hi').textContent = 'Hallo ' + (state.settings.childName || '') + '!';
+  renderRewards();
+}
+function bootstrap() {
+  if (!state.settings.parentPIN || !state.settings.childName) {
+    show('onboarding', false);
+  } else {
+    show('mode', false);
+  }
+  refreshAll();
+  const rc = document.getElementById('recentSessions');
+  if (state.sessions.length) {
+    rc.innerHTML = state.sessions.slice(0,4).map(s => `
+      <div class="session-item">
+        <div style="flex:1"><div class="s-title">${escapeHtml(s.data?.title||s.userTitle||'Lernrunde')}</div>
+        <div class="s-meta">${fmtDate(s.createdAt)}</div></div>
+      </div>`).join('');
+  }
+}
+bootstrap();
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js').catch(()=>{});
+}
+</script>
+</body>
+</html>
